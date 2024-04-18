@@ -21,21 +21,33 @@ train:
   learning_rate_max: 5e-5
   learning_rate_min: 1e-6
   seq_length: 512
-  training_arguments:
-    output_dir: null # to be set by hydra
-    learning_rate: null # to be set by the client
+  training_args :
+    output_dir: "llava-1.5-7b-hf-ft-mix-vsft"
+    report_to: "tensorboard"
+    learning_rate: 1.4e-5
     per_device_train_batch_size: 4
     gradient_accumulation_steps: 4
-    logging_steps: 10
-    num_train_epochs: 3
-    max_steps: 10
-    report_to: null
-    save_steps: 1000
-    save_total_limit: 10
-    gradient_checkpointing: ${model.gradient_checkpointing}
-    lr_scheduler_type: "constant"
+    logging_steps: 5
+    num_train_epochs: 1
+    # push_to_hub=True,
+    gradient_checkpointing: True
+    remove_unused_columns: False
     fp16: True
     bf16: False
+)
+  # training_arguments:
+  #   output_dir: null # to be set by hydra
+  #   learning_rate: null # to be set by the client
+  #   per_device_train_batch_size: 4
+  #   gradient_accumulation_steps: 4
+  #   logging_steps: 10
+  #   num_train_epochs: 3
+  #   max_steps: 10
+  #   report_to: null
+  #   save_steps: 1000
+  #   save_total_limit: 10
+  #   gradient_checkpointing: ${model.gradient_checkpointing}
+  #   lr_scheduler_type: "constant"
 
 strategy:
   _target_: flwr.server.strategy.FedAvg
