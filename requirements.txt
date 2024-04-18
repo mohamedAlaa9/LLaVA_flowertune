@@ -6,3 +6,6 @@ bitsandbytes==0.40.2
 scipy==1.11.2
 peft==0.4.0
 fschat[model_worker,webui]==0.2.35
+!pip install -U "transformers>=4.39.0"
+!pip install peft bitsandbytes
+!pip install -U "trl>=0.8.3"
