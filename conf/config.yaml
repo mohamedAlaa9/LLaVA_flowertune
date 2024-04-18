@@ -24,8 +24,8 @@ train:
   training_arguments:
     output_dir: null # to be set by hydra
     learning_rate: null # to be set by the client
-    per_device_train_batch_size: 16
-    gradient_accumulation_steps: 1
+    per_device_train_batch_size: 4
+    gradient_accumulation_steps: 4
     logging_steps: 10
     num_train_epochs: 3
     max_steps: 10
