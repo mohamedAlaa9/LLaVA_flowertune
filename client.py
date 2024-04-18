@@ -30,7 +30,7 @@ class FlowerClient(
     ):  # pylint: disable=too-many-arguments
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.train_cfg = train_cfg
-        self.training_argumnets = TrainingArguments(**train_cfg.training_arguments)
+        self.training_arguments = TrainingArguments(**train_cfg.training_arguments)
         self.tokenizer = tokenizer
         # self.formatting_prompts_func = formatting_prompts_func
         self.data_collator = data_collator
@@ -60,38 +60,38 @@ class FlowerClient(
             self.train_cfg.learning_rate_min,
         )
 
-        self.training_argumnets.learning_rate = new_lr
-        self.training_argumnets.output_dir = self.save_path
+        self.training_arguments.learning_rate = new_lr
+        self.training_arguments.output_dir = self.save_path
 
         # Construct trainer
         # trainer = SFTTrainer(
         #     model=self.model,
         #     tokenizer=self.tokenizer,
-        #     args=self.training_argumnets,
+        #     args=self.training_arguments,
         #     formatting_func=self.formatting_prompts_func,
         #     max_seq_length=self.train_cfg.seq_length,
         #     train_dataset=self.trainset,
         #     data_collator=self.data_collator,
         # )
-        training_args = TrainingArguments(
-            output_dir="llava-1.5-7b-hf-ft-mix-vsft",
-            report_to="tensorboard",
-            learning_rate=1.4e-5,
-            per_device_train_batch_size=8,
-            gradient_accumulation_steps=1,
-            logging_steps=5,
-            num_train_epochs=1,
-            # push_to_hub=True,
-            gradient_checkpointing=True,
-            remove_unused_columns=False,
-            fp16=True,
-            bf16=False
-        )
-        training_args.learning_rate = new_lr
-        training_args.output_dir = self.save_path
+        # training_args = TrainingArguments(
+        #     output_dir="llava-1.5-7b-hf-ft-mix-vsft",
+        #     report_to="tensorboard",
+        #     learning_rate=1.4e-5,
+        #     per_device_train_batch_size=8,
+        #     gradient_accumulation_steps=1,
+        #     logging_steps=5,
+        #     num_train_epochs=1,
+        #     # push_to_hub=True,
+        #     gradient_checkpointing=True,
+        #     remove_unused_columns=False,
+        #     fp16=True,
+        #     bf16=False
+        # )
+        # training_args.learning_rate = new_lr
+        # training_args.output_dir = self.save_path
         trainer = SFTTrainer(
             model=self.model,
-            args=training_args,
+            args=self.training_arguments,
             train_dataset=self.trainset,
             dataset_text_field="text",  # need a dummy field
             tokenizer=self.tokenizer,
