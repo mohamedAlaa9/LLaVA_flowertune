@@ -34,7 +34,6 @@ train:
     remove_unused_columns: False
     fp16: True
     bf16: False
-)
   # training_arguments:
   #   output_dir: null # to be set by hydra
   #   learning_rate: null # to be set by the client
