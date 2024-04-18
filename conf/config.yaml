@@ -5,10 +5,10 @@ num_clients: 2 # total number of clients
 num_rounds: 1
 
 dataset:
-  name: "vicgalle/alpaca-gpt4"
+  name: "HuggingFaceH4/llava-instruct-mix-vsft"
 
 model:
-  name: "openlm-research/open_llama_7b_v2"
+  name: "llava-hf/llava-1.5-7b-hf"
   quantization: 4 # 8 or 4 if you want to do quantization with BitsAndBytes
   gradient_checkpointing: True
   lora:
@@ -41,5 +41,5 @@ strategy:
   fraction_evaluate: 0.0 # no client evaluation
 
 client_resources:
-  num_cpus: 1
-  num_gpus: 0
+  num_cpus: 2
+  num_gpus: 1.0
