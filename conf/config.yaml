@@ -21,7 +21,7 @@ train:
   learning_rate_max: 5e-5
   learning_rate_min: 1e-6
   seq_length: 512
-  training_args :
+  training_arguments :
     output_dir: "llava-1.5-7b-hf-ft-mix-vsft"
     report_to: "tensorboard"
     learning_rate: 1.4e-5
