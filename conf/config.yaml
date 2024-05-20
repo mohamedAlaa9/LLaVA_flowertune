@@ -5,10 +5,10 @@ num_clients: 2 # total number of clients
 num_rounds: 1
 
 dataset:
-  name: "HuggingFaceH4/llava-instruct-mix-vsft"
+  name: "/content/drive/MyDrive/client_1_data"
 
 model:
-  name: "llava-hf/llava-1.5-7b-hf"
+  name: "/content/drive/MyDrive/llava-v1.5-7b-quilt-merged_new"
   quantization: 4 # 8 or 4 if you want to do quantization with BitsAndBytes
   gradient_checkpointing: True
   lora:
@@ -17,20 +17,25 @@ model:
 
 train:
   num_rounds: ${num_rounds}
-  save_every_round: 5
+  save_every_round: 1
   learning_rate_max: 5e-5
   learning_rate_min: 1e-6
   seq_length: 512
   training_arguments :
-    output_dir: "llava-1.5-7b-hf-ft-mix-vsft"
-    report_to: "tensorboard"
+    output_dir: null
+    # report_to: "tensorboard"
     learning_rate: 1.4e-5
     per_device_train_batch_size: 4
     gradient_accumulation_steps: 4
-    logging_steps: 5
+    logging_steps: 10
     num_train_epochs: 1
+    max_steps: 10
+    save_steps: 1000
+    save_total_limit: 10
+    report_to: null
     # push_to_hub=True,
-    gradient_checkpointing: True
+    gradient_checkpointing: ${model.gradient_checkpointing}
+    lr_scheduler_type: "constant"
     remove_unused_columns: False
     fp16: True
     bf16: False
@@ -51,7 +56,7 @@ train:
 strategy:
   _target_: flwr.server.strategy.FedAvg
   fraction_fit: 0.1 # sample 10% of clients (i.e. 2 per round)
-  fraction_evaluate: 0.0 # no client evaluation
+  fraction_evaluate: 0.5 # no client evaluation
 
 client_resources:
   num_cpus: 2

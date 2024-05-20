@@ -62,7 +62,7 @@ class FlowerClient(
 
         self.training_arguments.learning_rate = new_lr
         self.training_arguments.output_dir = self.save_path
-
+        self.tokenizer.padding_side = "right"
         # Construct trainer
         # trainer = SFTTrainer(
         #     model=self.model,

@@ -13,7 +13,7 @@ class LLavaDataCollator:
                 messages, tokenize=False, add_generation_prompt=False
             )
             texts.append(text)
-            images.append(example["images"][0])
+            images.append(example["image"])
 
         batch = self.processor(texts, images, return_tensors="pt", padding=True)
 
