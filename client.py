@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from typing import Callable, Dict, Tuple
-
+import os
 import flwr as fl
 import torch
 from flwr.common.typing import NDArrays, Scalar
@@ -40,11 +40,12 @@ class FlowerClient(
         # self.model = LlavaForConditionalGeneration.from_pretrained("llava-hf/llava-1.5-7b-hf", torch_dtype = torch.float16)
         self.model = get_model(model_cfg)
         self.trainset = trainset
-
+        self.state_dict = None
     def get_parameters(self, config: Dict[str, Scalar]) -> NDArrays:
         """Return the parameters of the current net."""
 
         state_dict = get_peft_model_state_dict(self.model)
+        self.state_dict = state_dict
         return [val.cpu().numpy() for _, val in state_dict.items()]
 
     def fit(
@@ -102,14 +103,24 @@ class FlowerClient(
         )
         # Do local training
         results = trainer.train()
-
+        self.model.config.save_pretrained(self.training_arguments.output_dir)
+        self.model.save_pretrained(self.training_arguments.output_dir, state_dict = self.state_dict)
+        non_lora_state_dict = get_peft_state_non_lora_maybe_zero_3(
+            self.model.named_parameters()
+        )
+        torch.save(non_lora_state_dict, os.path.join(self.training_arguments.output_dir, 'non_lora_trainables.bin'))
         return (
             self.get_parameters({}),
             len(self.trainset),
             {"train_loss": results.training_loss},
         )
 
-
+def get_peft_state_non_lora_maybe_zero_3(named_params, require_grad_only=True):
+    to_return = {k: t for k, t in named_params if "lora_" not in k}
+    if require_grad_only:
+        to_return = {k: t for k, t in to_return.items() if t.requires_grad}
+    to_return = {k: maybe_zero_3(v, ignore_status=True).cpu() for k, v in to_return.items()}
+    return to_return
 def set_parameters(model, parameters: NDArrays) -> None:
     """Change the parameters of the model using the given ones."""
     peft_state_dict_keys = get_peft_model_state_dict(model).keys()
