@@ -103,6 +103,7 @@ class FlowerClient(
         )
         # Do local training
         results = trainer.train()
+        trainer.save_state()
         self.model.config.save_pretrained(self.training_arguments.output_dir)
         self.model.save_pretrained(self.training_arguments.output_dir, state_dict = self.state_dict)
         non_lora_state_dict = get_peft_state_non_lora_maybe_zero_3(
