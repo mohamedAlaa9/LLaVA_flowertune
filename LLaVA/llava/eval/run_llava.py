@@ -1,5 +1,9 @@
 import argparse
 import torch
+import sys
+sys.path.append('/content/LLaVA_flowertune/LLaVA')
+from transformers import LlamaForCausalLM, AutoTokenizer
+
 
 from llava.constants import (
     IMAGE_TOKEN_INDEX,
@@ -50,11 +54,20 @@ def load_images(image_files):
 def eval_model(args):
     # Model
     disable_torch_init()
-
+    print("Before loading model")
     model_name = get_model_name_from_path(args.model_path)
     tokenizer, model, image_processor, context_len = load_pretrained_model(
         args.model_path, args.model_base, model_name
     )
+    # model = model.half().cuda()
+    # tokenizer.pad_token = "[PAD]"
+    # tokenizer.padding_side = "left"
+    tokenizer.pad_token = tokenizer.bos_token
+    tokenizer.padding_side = "left"
+
+    print("After loading model")
+    # tokenizer = AutoTokenizer.from_pretrained(args.model_path)
+    # model = LlamaForCausalLM.from_pretrained(args.model_path)
 
     qs = args.query
     image_token_se = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_TOKEN + DEFAULT_IM_END_TOKEN
@@ -116,7 +129,8 @@ def eval_model(args):
             input_ids,
             images=images_tensor,
             image_sizes=image_sizes,
-            do_sample=True if args.temperature > 0 else False,
+            # do_sample=True if args.temperature > 0 else False,
+            do_sample = False,
             temperature=args.temperature,
             top_p=args.top_p,
             num_beams=args.num_beams,

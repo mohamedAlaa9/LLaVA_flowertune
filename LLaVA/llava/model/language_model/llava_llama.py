@@ -69,6 +69,7 @@ class LlavaLlamaForCausalLM(LlamaForCausalLM, LlavaMetaForCausalLM):
       image_sizes: Optional[List[List[int]]] = None,
       return_dict: Optional[bool] = None,
       pixel_values: Optional[torch.FloatTensor] = None,  # Add this line
+      cache_position=None,
   ) -> Union[Tuple, CausalLMOutputWithPast]:
 
       # If `pixel_values` is important for your model, handle it here
