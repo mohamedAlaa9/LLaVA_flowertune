@@ -155,7 +155,7 @@ def gen_client_fn(
         #     else fds.load_partition(int(cid), "train")
         # )
 
-        path = dataset_cfg.name + 'client_' + str(cid + 1) + '_data'
+        path = dataset_cfg.name + 'client_' + str(int(cid) + 1) + '_data'
         client_trainset = load_dataset("imagefolder", data_dir= path, split="train")
 
         # client_trainset = client_trainset.rename_column("output", "response")

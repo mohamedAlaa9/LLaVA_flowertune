@@ -5,7 +5,7 @@ num_clients: 2 # total number of clients
 num_rounds: 1
 
 dataset:
-  name: "/content/drive/MyDrive/client_1_data"
+  name: "/content/drive/MyDrive/"
 
 model:
   name: "/content/drive/MyDrive/llava-v1.5-7b-quilt-merged_new"
