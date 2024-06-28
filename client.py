@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from typing import Callable, Dict, Tuple
 import os
+from datasets.arrow_dataset import Path
 import flwr as fl
 import torch
 from flwr.common.typing import NDArrays, Scalar
@@ -8,7 +9,7 @@ from omegaconf import DictConfig
 from trl import SFTTrainer
 from transformers import TrainingArguments, LlavaForConditionalGeneration
 from peft import get_peft_model_state_dict, set_peft_model_state_dict
-
+from datasets import load_dataset
 from models import get_model, cosine_annealing
 
 
@@ -137,6 +138,7 @@ def gen_client_fn(
     data_collator,
     model_cfg: DictConfig,
     train_cfg: DictConfig,
+    dataset_cfg: DictConfig,
     save_path: str,
     partition_id: int = 0,
     api: bool = False,
@@ -147,11 +149,15 @@ def gen_client_fn(
         """Create a Flower client representing a single organization."""
 
         # Let's get the partition corresponding to the i-th client
-        client_trainset = (
-            fds.load_partition(partition_id, "train")
-            if api
-            else fds.load_partition(int(cid), "train")
-        )
+        # client_trainset = (
+        #     fds.load_partition(partition_id, "train")
+        #     if api
+        #     else fds.load_partition(int(cid), "train")
+        # )
+
+        path = dataset_cfg.name + 'client_' + str(cid + 1) + '_data'
+        client_trainset = load_dataset("imagefolder", data_dir= path, split="train")
+
         # client_trainset = client_trainset.rename_column("output", "response")
 
         return FlowerClient(

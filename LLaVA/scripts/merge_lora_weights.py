@@ -1,4 +1,6 @@
 import argparse
+import sys
+sys.path.append('/content/LLaVA_flowertune/LLaVA')
 from llava.model.builder import load_pretrained_model
 from llava.mm_utils import get_model_name_from_path
 
