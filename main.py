@@ -53,6 +53,7 @@ def main(cfg: DictConfig) -> None:
         data_collator,
         cfg.model,
         cfg.train,
+        cfg.dataset,
         save_path,
     )
 
