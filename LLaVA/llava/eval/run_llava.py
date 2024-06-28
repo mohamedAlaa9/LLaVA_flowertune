@@ -54,7 +54,7 @@ def load_images(image_files):
 def eval_model(args):
     # Model
     disable_torch_init()
-    print("Before loading model")
+    # print("Before loading model")
     model_name = get_model_name_from_path(args.model_path)
     tokenizer, model, image_processor, context_len = load_pretrained_model(
         args.model_path, args.model_base, model_name
@@ -65,7 +65,7 @@ def eval_model(args):
     tokenizer.pad_token = tokenizer.bos_token
     tokenizer.padding_side = "left"
 
-    print("After loading model")
+    # print("After loading model")
     # tokenizer = AutoTokenizer.from_pretrained(args.model_path)
     # model = LlamaForCausalLM.from_pretrained(args.model_path)
 
